@@ -1,11 +1,50 @@
 <html>
 <head>
 <script type="text/javascript">
+
+// do not do this
+var client_id = "mj4k99379kd54z8r96zhk3s44wek7yr8";
+var secret = "yunx8uq6uxtmkthtxx6av2pyjzcyk3er";
+// end do not do
+
+
 (function() {
     if (typeof window.janrain !== 'object') window.janrain = {};
     window.janrain.settings = {};
     
-    janrain.settings.tokenUrl = 'http://nate1:8888/rpx-token-url.php';
+    /* _______________ can edit below this line _______________ */
+
+    janrain.settings.tokenUrl = 'http://localhost/rpx-token-url.php';
+    janrain.settings.type = 'modal';
+    janrain.settings.appId = 'bajlnnbjfanophndcdip';
+    janrain.settings.appUrl = 'https://nate.rpxnow.com';
+    janrain.settings.providers = [
+	'facebook',
+	'google',
+	'aol',
+	'yahoo',
+	'openid',
+	'myopenid',
+	'flickr'];
+    janrain.settings.providersPerPage = '6';
+    janrain.settings.format = 'two column';
+    janrain.settings.actionText = 'Sign in using your account with';
+    janrain.settings.showAttribution = true;
+    janrain.settings.fontColor = '#666666';
+    janrain.settings.fontFamily = 'lucida grande, Helvetica, Verdana, sans-serif';
+    janrain.settings.backgroundColor = '#ffffff';
+    janrain.settings.width = '392';
+    janrain.settings.modalBorderColor = '#000000';
+    janrain.settings.modalBorderRadius = '10';
+    janrain.settings.modalBorderWidth = '10';
+    janrain.settings.modalBorderOpacity = '0.5';
+    janrain.settings.buttonBorderColor = '#CCCCCC';
+    janrain.settings.buttonBorderRadius = '5';
+    janrain.settings.buttonBackgroundStyle = 'gradient';
+    janrain.settings.language = 'en';
+    janrain.settings.linkClass = 'janrainEngage';
+
+    /* _______________ can edit above this line _______________ */
 
     function isReady() { janrain.ready = true; };
     if (document.addEventListener) {
@@ -31,8 +70,8 @@
 </head>
 <body>
 <h1>welcome to nate1</h1>
-<div id="janrainEngageEmbed"></div>
-
+<h2>next...</h2>
+<a class="janrainEngage" href="#">Sign-In</a>
 </body>
 
 </html>
