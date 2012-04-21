@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Static File Janrain Capture Demo</title>
+    <script src="Capture.js"></script>
+    <script src="http://zor.ai1.livefyre.com/wjs/v1.0/javascripts/livefyre_init.js"></script>
+
+    <!-- omniture -->
+    <!-- this file should be served by AI, via https. You can edit the file however you wish. -->
+    <script src="./scripts-ai/Omniture.js"></script>
+
+  </head>
+
+  <body>
+    <script src="http://d134l0cdryxgwa.cloudfront.net/backplane.js"></script>
+    <script src="json2.min.js"></script> <!-- pre-requisite for Capture.js -->
+    <script src="capture_client.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- INIT SERVICES -->
+
+     <!-- replace HTTP-YOURDOMAIN with http://yourdomain... -->
+    <!-- replace HTTPS-YOURCAPTUREEVAL with http://yourdemo.eval.janraincapture.com/... -->
+    <!-- replace CLIENT-ID with your client id-->
+    <script type="text/javascript">
+      (function() {
+          if (typeof window.CAPTURE !== 'object') window.CAPTURE = {};
+
+          window.CAPTURE.config = {
+              // configuration arguments
+              bp_channel: function() { return Backplane.getChannelID(); },
+              capture_ui_server_url: 'https://americanidol.dev.janraincapture.com',
+              capture_server_url: 'https://americanidol.dev.janraincapture.com', // e.g. https://demo.eval.janraincapture.com/
+              redirect_uri: 'http://mulciber.janrain.com/StaticCapture/oauth_redirect.html',
+              response_type: 'token',
+              client_id: 'p6bze72r6x69vjzy93v3bjc85eqjv5dk',
+              application_id: '5bq2p3u8etmm8chawg3wzkjhh9',
+              xd_receiver: 'http://mulciber.janrain.com/StaticCapture/xdcomm.html',
+              age_limit_url: 'http://mulciber.janrain.com/StaticCapture/unable_to_login.html',
+              // page event callbacks
+              callbacks: {
+                  userSignedIn: function () {
+                      var signin = document.getElementById('signin_link')
+                      if (signin){ signin.className = 'hidden'; }
+                      var loggedInNav = document.getElementById('logged_in_nav');
+                      loggedInNav.className = '';
+                      var messageDiv = document.getElementById('message');
+                      if (messageDiv) {
+                          var message = CAPTURE.util.getCookie('staticMessage');
+                          if (message) {
+                              CAPTURE.util.delCookie('staticMessage');
+                          } else {
+                              message = 'Welcome, thanks for coming<br><a href="profile_image.html">link to profile image sample</a>';
+                          }
+                          messageDiv.innerHTML = message;
+                          messageDiv.style.display = 'block';
+                      }
+
+                      // omniture
+                      OMNITURE_AI.handleUserSignIn();
+
+                  },
+                  userReturned: function () {
+                      var profile = JSON.parse(
+                          CAPTURE.util.getCookie('janrainProfile')) || {};
+                      var signin = document.getElementById('signin_link')
+                      if (signin){ signin.className = 'hidden'; }
+                      var loggedInNav = document.getElementById('logged_in_nav');
+                      loggedInNav.className = '';
+                      var messageDiv = document.getElementById('message');
+                      if (messageDiv) {
+                          var message = CAPTURE.util.getCookie('staticMessage');
+                          if (message) {
+                              CAPTURE.util.delCookie('staticMessage');
+                          } else {
+                              message = 'Welcome, thanks for coming ' + profile.displayName + '!<br><a href="profile_image.html">link to profile image sample</a>';
+                          }
+                          messageDiv.innerHTML = message;
+                          messageDiv.style.display = 'block';
+                      }
+                      var imgTag = document.createElement('img');
+                      imgTag.src = profile.profilePhoto;
+                      imgTag.width = '30';
+                      imgTag.height = '30';
+                      messageDiv.appendChild(imgTag);
+                  },
+                  userStartedRegistration: function () {
+                      alert("User registration started");
+                  },
+                  userRegistered: function (data) {
+                      alert("User registered!");
+                  },
+                  recoverPasswordComplete: function () {
+                      // Show password recovery page here
+                      var passwordFrame = CAPTURE.profilePasswordResetFrame(),
+                      pageContent = document.getElementById('page_content');
+                      savedPage = pageContent.innerHTML;
+                      while (pageContent.firstChild) {
+                          pageContent.removeChild(pageContent.firstChild);
+                      }
+                      pageContent.appendChild(passwordFrame);
+                  },
+                  recoverPasswordStart: function () {
+                      CAPTURE.closeModal()
+                      var messageDiv = document.getElementById('message');
+                      if (messageDiv){
+                          messageDiv.innerHTML = 'Please check your email.';
+                          messageDiv.style.display = 'block';
+                      }
+                  },
+                  emailVerified: function () {
+                      var messageDiv = document.getElementById('message');
+                      if (messageDiv){
+                          messageDiv.innerHTML = 'Your email has been verified';
+                          messageDiv.style.display = 'block';
+                      }
+
+                  },
+                  userUpdatedData: function (payload) {
+                      // Remove profile window
+                      pageContent = document.getElementById('page_content');
+                      pageContent.removeChild(pageContent.firstChild)
+                      pageContent.innerHTML = savedPage
+                      var messageDiv = document.getElementById('message');
+                      messageDiv.innerHTML = 'Profile saved.';
+                      messageDiv.style.display = 'block';
+
+                      /*
+                      This block is used to 'push' profile updates to Livefyre.
+
+                      It passes the 'jrtoken' cookie value to the
+                      {domain}/api/v1.1/private/capture/profile_updated/?jrtoken={token} endpoint via JSONP.
+                      */
+
+                      if (typeof($jl)!=='undefined' && typeof(LF) !== 'undefined') {
+                          var jrTokenMatch = document.cookie.match(/janrainToken=([^;]+)/),
+                              jrToken, lfPushUrl;
+                          if (jrTokenMatch && (jrTokenMatch.length == 2)) {
+                              jrToken = jrTokenMatch[1]
+                          }
+                          lfPushUrl = 'http://' + LF.config.domain + '/api/v1.1/private/capture/profile_updated/';
+                          if (jrToken) {
+                            $jl.ajax({
+                              url: lfPushUrl,
+                              data: {'jrtoken': jrToken},
+                              dataType: 'jsonp',
+                              success: function(data){}
+                            });
+                          }
+                      }
+                  },
+                  sessionExpired: function() {
+                      window.CAPTURE.invalidateSession();
+                      window.location.reload();
+                  },
+                  captureInitalized: function(CAPTURE) {
+                      queryDict = CAPTURE.util.queryDict(
+                          window.location.search.substring(1));
+                      if (queryDict.email_verified == 'true') {
+                          CAPTURE.emailVerified();
+                      }
+                  },
+                  sessionInvalidated: function() {
+                      alert("You have been logged out.");
+                  },
+                  getuserDataFinish: function() {
+                      console.log("getuserDataFinish called");
+                  }
+              }
+          };
+      })();
+
+    Backplane(CAPTURE.init);
+    Backplane.init({
+        serverBaseURL: 'http://backplane1.janrainbackplane.com/v1.2',
+        busName: 'americanidol',
+        channelExpires: ''
+    });
+
+    </script>
+
+    <div id='navigation'>
+      <a id='signin_link' href=''>Register / Sign In</a>
+
+      <!-- ATTACH SIGNIN LAUNCHER -->
+      <script type="text/javascript">
+        document.getElementById('signin_link').onclick = function (event) {
+            CAPTURE.startModalLogin();
+            Backplane.expectMessages('identity/login');
+            return false;
+        };
+      </script>
+
+      <div id='logged_in_nav' class='hidden'>
+        <a id='public_profile_link' href='./public_profile.html'>View your profile</a> |
+        <a id='profile_link' href='./profile.html'>Edit your profile</a> |
+        <a id='logout_link' href=''>Logout</a>
+      </div>
+
+      <!-- ATTACH PROFILE LAUNCHER -->
+      <script type="text/javascript">
+        document.getElementById('logout_link').onclick = function (event) {
+            CAPTURE.invalidateSession();
+            CAPTURE.util.delCookie('backplane-channel');
+            document.location.reload();
+            return false;
+        };
+      </script>
+      <br/>
+    </div>
+
+    <div id="page">
+      <div class="content" id="page_content">
+        <h1>Janrain Capture Demo Site</h1>
+
+        <div id='message' style="color:blue; padding:20px; display:none"></div>
+
+        <ul class="lipsum">
+          <li>
+            <span>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id
+              ipsum nec nunc vulputate porttitor eu in sapien. Nullam et metus
+              eu diam dignissim sollicitudin. Donec metus dui, dictum non
+              posuere quis, lacinia et magna. asdf asdf asdf.
+            </span>
+          </li>
+          <li>
+            <span>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id
+              ipsum nec nunc vulputate porttitor eu in sapien. Nullam et metus
+              eu diam dignissim sollicitudin. Donec metus dui, dictum non
+              posuere quis, lacinia et magna. asdf asdf asdf.
+            </span>
+          </li>
+          <li>
+            <span>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id
+              ipsum nec nunc vulputate porttitor eu in sapien. Nullam et metus
+              eu diam dignissim sollicitudin. Donec metus dui, dictum non
+              posuere quis, lacinia et magna. asdf asdf asdf.
+            </span>
+          </li>
+          <li class="last">
+            <span>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id
+              ipsum nec nunc vulputate porttitor eu in sapien. Nullam et metus
+              eu diam dignissim sollicitudin. Donec metus dui, dictum non
+              posuere quis, lacinia et magna. asdf asdf asdf.
+            </span>
+          </li>
+        </ul>
+        <div class="clear"></div>
+
+        <h2>Lorem Ipsum</h2>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a turpis
+          ligula, ac suscipit ipsum. Proin euismod aliquet nulla consequat
+          mattis. Proin posuere vestibulum ipsum non volutpat. Phasellus
+          faucibus vehicula vehicula. Sed ultrices sem sed est porttitor non
+          blandit lorem laoreet. Suspendisse tempor tristique enim non pretium.
+          Nulla facilisi. Vivamus eleifend, ipsum non tincidunt scelerisque,
+          odio lacus molestie tortor, at aliquet felis est id erat. Morbi ipsum
+          tellus, feugiat ac egestas quis, blandit ut lorem. Aenean porta
+          aliquam tellus iaculis imperdiet. Aliquam ut nunc sapien, vel porta
+          nunc. Nunc tincidunt posuere dictum. Pellentesque vel lacus eros,
+          pellentesque accumsan tellus. Suspendisse nec adipiscing odio. Cras
+          aliquet, felis ac accumsan condimentum, velit eros vulputate tellus,
+          non vestibulum mauris nulla ut eros. Pellentesque habitant morbi
+          tristique senectus et netus et malesuada fames ac turpis egestas.
+          Class aptent taciti sociosqu ad litora torquent per conubia nostra,
+          per inceptos himenaeos.
+        </p>
+        <p>
+          Praesent laoreet elit eu orci aliquam vel pharetra justo vehicula. Ut
+          mattis viverra nunc vel euismod. Nam pellentesque iaculis ante vel
+          hendrerit. Cras et lectus ligula, et venenatis ipsum. Fusce venenatis
+          porta enim, aliquet condimentum dolor gravida in. Curabitur luctus
+          neque convallis sapien mattis in eleifend leo tempus. Morbi volutpat
+          laoreet augue, sit amet venenatis velit porta id. Sed arcu risus,
+          suscipit blandit posuere id, ullamcorper sit amet ligula. Donec
+          eleifend vehicula pulvinar. Mauris ante ipsum, feugiat id molestie eu,
+          cursus eget quam. Sed justo leo, fringilla non interdum et, hendrerit
+          et orci. Aenean euismod urna eget urna egestas quis ultricies lacus
+          facilisis. Cras ut risus justo. Donec quis massa ligula.
+        </p>
+      </div>
+      <div id="livefyre"></div>
+    </div>
+    <script>
+      var fyre = LF({
+          domain: 'idol-dev.fyre.co',
+          site_id: 292147,
+          article_id: 'lfjrtest_0',
+          backplane: Backplane
+      });
+    </script>
+    <script>
+    /*
+      BEGIN LIVEFYRE WIDGET EVENT HANDLERS
+    */
+    /*
+    Here we will create two 'delegate objects', each of which will be
+    registered with the LF widget's event dispatcher.
+    Delegate objects implement method names that correspond to widget events
+
+    Comments by ben@livefyre.com. Email with questions
+    */
+      var auth_delegate = {
+        /*
+        This event gets fired whenever an anonymous user clicks 'Sign in'
+        or tries to take an action requiring authentication.
+
+        The provided callback opens Capture's sign in dialog, and should
+        work as provided
+        */
+        handle_auth_login: function(){
+          CAPTURE.startModalLogin();
+          Backplane.expectMessages('identity/login');
+          return false;
+        },
+        /*
+        This event is fired when a user clicks 'log out' from the LF Widget
+
+        The provided callback tells Capture to log the user out, clears
+        the backplane channel cookie, and reloads the page.
+        */
+        handle_auth_logout: function(){
+          CAPTURE.invalidateSession();
+          CAPTURE.util.delCookie('backplane-channel');
+          document.location.reload();
+          return false;
+        }
+      };
+      var social_delegate = {
+        /*
+        This event is fired when a user clicks 'share' button on a comment.
+        The 'data' object passed to the callback has values for
+        data.comment_author, data.comment_text, data.comment_url
+        data.preventDefault() will prevent Livefyre's default share dialog
+        from opening.
+
+        The data object exposed has the following structure:
+
+        data = {
+          author: 'Matthew Roberson',
+          html: '<body xmlns:lf="http://livefyre.com/protocol/html" xmlns="http://www.w3.org/1999/xhtml"><p>test post</p></body>',
+          id: 7889035,
+          url: 'http://mulciber.janrain.com/StaticCapture/static_ai.html#lf_comment=7889035'
+        };
+
+        This event is not currently fired but will be added by LF on 12/13/11
+        Idoldev or Janrain will need to launch the Janrain share dialog
+        with the right parameters
+        */
+        handle_share_comment: function(data, event){
+          //Launch Janrain Share
+          event.preventDefault();
+        }
+      };
+      /*
+      Now that we've created the delegate objects, we'll tell the widget
+      to register them with the event dispatcher once the widget is intialized
+      (on LF.ready)
+      */
+      LF.ready(function(){
+        LF.Dispatcher.addListener(auth_delegate);
+        LF.Dispatcher.addListener(social_delegate);
+        /*
+        This is an independent click handler that gets called when a user
+        clicks on the author's name on any comment. It parses out the user's
+        Capture UUID and generates a profile URL for that user.
+
+        Idoldev or Janrain will want to pass the uuid or profile url to some
+        other function to change the page location or open the profile
+        in a modal
+        */
+        $jl(".lf_comment_user_nick").live('click', function(){
+          //get the uuid from the DOM for this user
+          var uuid = $jl(this).closest(".lf_comment").siblings(".lf_comment_user").attr("jid").split("@")[0];
+          // Build profile url
+          window.document.location = './public_profile.html?uuid=' + uuid;
+          return false;
+        });
+        //same as above, but for quick profile
+        $jl("#livefyre .lf_full_profile").live('click', function(){
+          var uuid = $jl(this).parent().siblings(".lf_comment_user").attr("jid").split("@")[0];
+          window.document.location = './public_profile.html?uuid=' + uuid;
+          return false;
+        });
+      });
+    </script>
+    <style type="text/css">
+      #livefyre .lf_edit_profile_link{
+        display: none;
+      }
+    </style>
+  </body>
+</html>
