@@ -1,0 +1,306 @@
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 5.3.1.0 for ESI 5.3.0 - for Fedora Core 7
+August 5, 2008
+*********************************************************************
+This version is compiled on Fedora Core 7, with gcc 4.1.2
+and associated libraries.
+
+The mod_esi.so library is dynamically loaded.  Fedora restricts
+dynamic loading in some cases. It may be necessary to allow the
+dynamic loading by executing this command after install:
+
+   chcon -t textrel_shlib_t /usr/local/ETS/libexec/mod_esi.so
+
+substitute the location of your installed mod_esi.so if it isn't
+in  the default /usr/local/ETS/libexec directory.
+
+There are no new ESI features in this release.
+
+Code Fixes in this release:
+     - Fix for bufferstack management that corrupts
+       outgoing header set
+     - Properly support "noop" processor as a 
+       pure data passthrough (previously, some 
+       requests would be treated as ghostmon requests)
+     - Included more libraries as staically linked
+       libraries.  Teh current library set that 
+       this ETS depends on is:
+
+ ldd mod_esi.so
+        linux-gate.so.1 =>  (0x00110000)
+        libpthread.so.0 => /lib/libpthread.so.0 (0x00111000)
+        libdl.so.2 => /lib/libdl.so.2 (0x00129000)
+        libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x0012e000)
+        libm.so.6 => /lib/libm.so.6 (0x00219000)
+        libc.so.6 => /lib/libc.so.6 (0x00242000)
+        /lib/ld-linux.so.2 (0x0061d000)
+        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x00396000)
+
+Apache docs and sample web pages have been eliminated from the install
+package to reduce its size.
+
+This version is a Linux-only release.
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 5.3.0.1 for ESI 5.3.0
+November 23, 2005
+*********************************************************************
+This version supports ESI version 5.3.0. There are no new bug fixes
+in this release, only new ESI version support.
+
+This version is a Linux-only release.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 5.0.2.0 for ESI 5.0.2
+December 22, 2003
+*********************************************************************
+This version supports ESI version 5.0.2. There are no new bug fixes
+in this release, only new ESI version support.
+
+This version is a Linux-only release.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.3.3 for ESI 4.9.3
+November 5, 2003
+*********************************************************************
+This version supports ESI version 4.9.3. This release fixes a bug with
+the handling of chained ESI processors.  
+
+This version is a Linux-only release.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.3.2 for ESI 4.9.3
+July 15, 2003
+*********************************************************************
+This version supports ESI version 4.9.3. This is a Solaris release
+that tracks the most recent Linux release.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.3.1 for ESI 4.9.3
+July 15, 2003
+*********************************************************************
+This version supports ESI version 4.9.3. This release includes a fix 
+for a metadata-related bug that cause certain for loops not to be
+executed.
+
+Version 4.9.3.1 also includes an enhancement to the DCAProcessing 
+directive. The new format is this: 
+    DCAProcessing dcaType {include|exclude} [akamaizer tag name]
+The operation is the same as mentioned in the documentation, with 
+exception of the akamaizer DCA type.For that type, an Akamaizer
+directive can be specified, and that edghe akamaizer configuration
+will be used for the indicated DCA Processing.
+The format of the Akamaizer directive is:
+    Akamaizer name akamaizer-config
+The akamaizer configuration should be developd with the assistance 
+Akamai integration consultants.
+
+This version is a Linux-only release.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.3.0 for ESI 4.9.3
+June 27, 2003
+*********************************************************************
+This version supports ESI version 4.9.0. This release includes an ESI
+fix for a bug that caused a segfault when processing certain erroneous
+ESI code.
+
+This version is a Linux-only release.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.1.3 for ESI 4.9.1
+May 28, 2003
+*********************************************************************
+This version supports ESI version 4.9.1.  There is one change in this
+version, the esi:eval statement is enabled by default.  In previous
+versions it was disabled by default.  
+
+This version is a Linux-only release.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.1.1 for ESI 4.9.1
+*********************************************************************
+This version supports ESI version 4.9.1.  There are no changes as yet
+in the operation or configuration of ETS. This is a Solaris only release
+
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.1.0 for ESI 4.9.1
+*********************************************************************
+This version supports ESI version 4.9.1.  There are no changes as yet
+in the operation or configuration of ETS.  This is a Linux only release
+
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.0.2 for ESI 4.9.0
+*********************************************************************
+This version supports ESI version 4.9.0.  There are no changes as yet
+in the operation or configuration of ETS. This is a Solaris only release
+
+
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.9.0.0 for ESI 4.9.0
+*********************************************************************
+This version supports ESI version 4.9.0.  There are no changes as yet
+in the operation or configuration of ETS.
+
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.8.1.1 for ESI 4.8.1
+January 9, 2003
+*********************************************************************
+  This version of ETS supports ESI version 4.8.1. This version of ETS
+  add support for Solaris, SSL support, and a new version of Apache.
+  The ETS release can be determined in the field from a header returned
+  to clients.  The header for this version will look like this:
+      ETS-Version: mod_esi 4.8.1.1 for ESI 4.8.1 build date: Jan 09 2003
+  There are no new configuration file tags for this version.
+
+  This is the first Solaris ETS to support ESI 4.8.x.  Earlier versions
+  of Solaris EST supported up to ESI 4.6.0.
+  
+  This version of ETS is a module for Apache 1.3.27.  Previous versions 
+  included Apache 1.3.20.  The change was made to support the latest 
+  version of mod_ssl.  The mod_ssl bundled with ETS is the latest 
+  available, version 2.3.12-1.3.27.  The ETS module (mod_esi.so) 
+  is compiled with the -DEAPI flag, so there should be no conflicts 
+  with SSL.
+  mod_ssl uses virtual hosts for its configuration, as does ETS.  To 
+  use with an SSL virtual host, simply add the ETS configuration 
+  lines at the end of the SSL virtual host definition.  For example:
+
+      <VirtualHost localhost:443>
+      # SSL specific stuff, like 
+      # SSLEngine on
+      # The ETS configuration
+        <IfModule mod_esi.c>
+            ESIDebugging off
+            ESILogging off
+            ProxyPass / http://localhost:81/
+            <Directory proxy:*>
+                Order allow,deny
+                Allow from all
+            </Directory>
+        </IfModule>
+
+  By default the install script will add the ETS configuration 
+  information at the end of the httpd.conf.  If you intend to use ETS
+  with SSL you will nedd to manually move it into the SSL virtual host
+  definition.
+  ETS only supports proxying HTTP connections, this the host in the
+  ProxyPass must be an http host, not an https host.
+
+*********************************************************************
+Release Notes
+ESI Test Server
+Version 4.8.1.0 for ESI 4.8.0
+November 20,2002
+*********************************************************************
+  This version of ETS supports ESI version 4.8.0. There are some new
+  features of ETS and ESI for this version that are not documented
+  in the ETS documentation PDF that is part of this package. These 
+  features include some new header manipulation featues, and support
+  for the new ESI Edge Akamaization feature.
+  The ETS release can be determined in the field from a header returned
+  to clients.  The header for this version will look like this:
+      ETS-Version: mod_esi 4.8.0.0 for ESI 4.8.0 build date: Nov 20 2002
+
+  These are the new features not currently mentioned in the existing 
+  documentation:
+  * The Surrogate-Capability header can be sent to the origin server by
+    setting the new "SurrogateHeader" in the configuration file. The
+    format is:
+        SurrogateHeader name value
+    The actual header sent will be constructed by wrapping the surrogate
+    header value with akam="value".  If the header name is
+    "Surrogate-Capability" and the value is "ESI/1.0"  the resulting
+    header will be:
+        Surrogate-Capability: akam="ESI/1.0"
+
+  * A host header field can be added to requests to the origin server by
+    using the new HostHeader configuration value.  An example of this is:
+        HostHeader hostname
+    a header:
+        Host: hostname
+    will be added to all requests to the origin server.
+    
+  * $GEO throughput and network type can now be set via the configuration
+    file.
+
+  * Edge akamaization and DCA processor selection is supported in ETS via
+    configuration settings. In the deployed network DCA processing is
+    controlled via metadata match tags that direct ghost to select a
+    particular DCA processor, either ESI, XSL, Java, Akamaizer or NOOP.
+    These metadata tags are not available to ETS, so a different mechanism
+    had to be designed to control which DCA processor is used for a
+    request. Previous versions of ETS used a simple file name matching 
+    to determine which processor to invoke.  If a url had an extension of
+    .xml or .xsl it went to the XSLT processor. Otherwise it was sent to
+    ESI processor. To allow mroe flexibility and to support new processors
+    there is a new configuration file parameter called DCAProcessing with
+    this format:
+       DCAProcessing dcaType {include|exclude} url
+    the dcaType can be one of these: esi, xslt, akamaizer, noop
+    The include or exclude indicates whether to include the specified 
+    url in the URLS processed by that processor, or to exclude it. The
+    url should not include the protocol, host or port, but may include 
+    '*' to match zero to many characters. Include/exclude statements
+    are processed in the order they are found in the configuration file
+    until a match is found. Each statement is checked at most once for
+    a url. If an include statement matches the url, the processor type
+    is set to the indicated type.  If a subsequent exclude matches the
+    url the processor is reset to the default, and checking the include
+    and exclude statements continues.  If at the end no processor matches
+    the include/exclude statements the url is determined based on the rules
+    from the older ESI versions, with the default being ESI processing.
+    Here is a sample set of rules:
+        DCAProcessing noop include "/*"           # default to noop
+        DCAProcessing noop exclude "/files/esi*"  # exclude files/esi from noop 
+        DCAProcessing esi include "/files/esi*"  # include files/esi in esi processing
+        DCAProcessing esi exclude "/files/esi/akamaizer*"  # include files/esi from noop 
+        DCAProcessing akamaizer include "/files/esi/akamaizer*"  # include files/esi in esi processing
+    The edge akamaizer configuration is specified by a metadata tag called
+    dca-akamaizer-tag-filter. Multiple instances of this filter will be chained
+    in the same way the standard metadata works.  The format of the tag is
+    slightly different from the standard metadata format, to make reading 
+    the ETS config file clearer.  Here is the format:
+        Metadata dca-akamaizer-tag-filter "type=typestr tags=tagnames regex=regex"
+    and a sample:
+        Metadata dca-akamaizer-tag-filter "type=\"include\" tags=\"img/src\" regex=\"#(.*)#$1#\""
+    Note that the quotes inside the filter specification need to be escaped
+    with slashes to prevent them from being interpreted when the configuration
+    file is read by ETS.
+    
+*********************************************************************
+For additional information or assistance, contact:
+
+Phone:     (877) 4AKATEC or (877) 425-2832
+Internet:  http://www.akamai.com
+Email:     ccare@akamai.com
+**********************************************************************
